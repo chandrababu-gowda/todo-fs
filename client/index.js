@@ -24,8 +24,11 @@ function displayTask(taskArr) {
     task.remove();
   });
 
-  taskArr.forEach((task) => {
-    taskBox.insertAdjacentHTML("afterend", `<div class="task">${task}</div>`);
+  taskArr.forEach((task, index) => {
+    taskBox.insertAdjacentHTML(
+      "afterend",
+      `<div class="task" data-index=${index}><p>${task}</p><button class="delBtn">Delete</button></div>`
+    );
   });
 }
 
