@@ -1,6 +1,7 @@
 var express = require("express");
 var http = require("http");
 var bodyParser = require("body-parser");
+var cors = require("cors");
 
 var app = express();
 
@@ -8,6 +9,15 @@ app.set("port", process.env.PORT || 3000);
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cors());
+app.options("*", cors());
+var allowCrossDomain = function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+};
+app.use(allowCrossDomain);
 // Close the server if there is an uncaught exception
 app.use((req, res, next) => {
   // Create a domain for this request
@@ -58,17 +68,15 @@ app.use((req, res, next) => {
 var task = [];
 
 // Handle request to root
-// app.get("/", (req, res) => {
-//   res.sendFile(__dirname + "./client/index.html");
-//   res.end();
-//   // res.setHeader("content-type", "text/plain");
-//   // res.end("Home page");
-// });
+app.get("/", (req, res) => {
+  res.send(JSON.stringify(task));
+});
 
 app.post("/", (req, res) => {
   task.push(req.body.task);
   console.log(task);
-  res.redirect(303, "localhost:5500/client/index.html");
+  res.statusCode = 204;
+  res.end();
 });
 
 // Custom 404 page
